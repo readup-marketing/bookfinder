@@ -1,0 +1,2766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadUp Book Finder - Perfect Books for Your Child</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #ffffff; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 60px 20px 40px; background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); }
+        h1 { font-size: 3em; color: #E8B84D; margin-bottom: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+        .subtitle { font-size: 1.3em; color: #cccccc; margin-bottom: 10px; }
+        .tagline { font-size: 1em; color: #999999; font-style: italic; }
+        .filter-section { background-color: #252525; border-radius: 15px; padding: 40px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+        .filter-section h2 { color: #E8B84D; font-size: 2em; margin-bottom: 30px; text-align: center; }
+        .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .filter-group { display: flex; flex-direction: column; }
+        label { color: #E8B84D; font-weight: 600; margin-bottom: 10px; font-size: 1.1em; }
+        select, input[type="text"] { padding: 12px; border: 2px solid #E8B84D; border-radius: 8px; background-color: #1a1a1a; color: #ffffff; font-size: 1em; transition: all 0.3s ease; }
+        select:focus, input[type="text"]:focus { outline: none; border-color: #f5d077; box-shadow: 0 0 10px rgba(232, 184, 77, 0.3); }
+        select option { background-color: #1a1a1a; color: #ffffff; }
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 10px; }
+        .checkbox-item { display: flex; align-items: center; }
+        .checkbox-item input[type="checkbox"] { margin-right: 8px; width: 20px; height: 20px; accent-color: #E8B84D; }
+        .checkbox-item label { margin: 0; font-weight: 400; font-size: 0.95em; color: #cccccc; }
+        .find-books-btn { display: block; width: 100%; max-width: 400px; margin: 40px auto 0; padding: 18px 40px; background-color: #E8B84D; color: #1a1a1a; border: none; border-radius: 50px; font-size: 1.3em; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
+        .find-books-btn:hover { background-color: #f5d077; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232, 184, 77, 0.4); }
+        .results-section { display: none; margin-top: 50px; }
+        .results-section.active { display: block; }
+        .results-header { text-align: center; margin-bottom: 40px; }
+        .results-header h2 { color: #E8B84D; font-size: 2.5em; margin-bottom: 15px; }
+        .results-header p { color: #cccccc; font-size: 1.2em; }
+        .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        .book-card { background-color: #252525; border-radius: 12px; padding: 25px; transition: all 0.3s ease; border: 2px solid transparent; }
+        .book-card:hover { border-color: #E8B84D; transform: translateY(-5px); box-shadow: 0 10px 25px rgba(232, 184, 77, 0.2); }
+        .book-number { display: inline-block; background-color: #E8B84D; color: #1a1a1a; font-weight: 700; padding: 5px 12px; border-radius: 20px; font-size: 0.9em; margin-bottom: 15px; }
+        .book-card h3 { color: #E8B84D; font-size: 1.5em; margin-bottom: 8px; }
+        .book-author { color: #999999; font-style: italic; margin-bottom: 15px; font-size: 1.1em; }
+        .book-meta { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .meta-tag { background-color: #1a1a1a; color: #E8B84D; padding: 5px 12px; border-radius: 15px; font-size: 0.85em; border: 1px solid #E8B84D; }
+        .book-synopsis { color: #cccccc; line-height: 1.8; margin-top: 15px; }
+        .back-btn { display: block; width: 200px; margin: 40px auto; padding: 12px 30px; background-color: transparent; color: #E8B84D; border: 2px solid #E8B84D; border-radius: 50px; font-size: 1.1em; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .back-btn:hover { background-color: #E8B84D; color: #1a1a1a; }
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .filter-section { padding: 25px; }
+            .filter-grid { grid-template-columns: 1fr; }
+            .books-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ReadUp Book Finder</h1>
+        <p class="subtitle">Discover the Perfect Books for Your Child</p>
+        <p class="tagline">Over 330 books - personalized recommendations tailored to your child's interests</p>
+    </header>
+
+    <div class="container">
+        <div class="filter-section" id="filterSection">
+            <h2>Tell Us About Your Child</h2>
+            
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label for="ageRange">Age Range</label>
+                    <select id="ageRange" required>
+                        <option value="">Select age range...</option>
+                        <option value="4-5">4-5 years (EYFS)</option>
+                        <option value="5-6">5-6 years (Year 1)</option>
+                        <option value="6-7">6-7 years (Year 2)</option>
+                        <option value="7-8">7-8 years (Year 3)</option>
+                        <option value="8-9">8-9 years (Year 4)</option>
+                        <option value="9-10">9-10 years (Year 5)</option>
+                        <option value="10-11">10-11 years (Year 6)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="readingLevel">Reading Confidence</label>
+                    <select id="readingLevel">
+                        <option value="">Select reading level...</option>
+                        <option value="emerging">Just starting out</option>
+                        <option value="developing">Gaining confidence</option>
+                        <option value="fluent">Reading independently</option>
+                        <option value="advanced">Reading above age level</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="favoriteAuthor">Favorite Authors (Optional)</label>
+                    <input type="text" id="favoriteAuthor" placeholder="e.g., Roald Dahl, Julia Donaldson">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>What Interests Your Child?</label>
+                <div class="checkbox-group" id="interests">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-adventure" value="adventure">
+                        <label for="int-adventure">Adventure</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-mystery" value="mystery">
+                        <label for="int-mystery">Mystery</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-fantasy" value="fantasy">
+                        <label for="int-fantasy">Fantasy</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-animals" value="animals">
+                        <label for="int-animals">Animals</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-science" value="science">
+                        <label for="int-science">Science</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-history" value="history">
+                        <label for="int-history">History</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-sports" value="sports">
+                        <label for="int-sports">Sports</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-funny" value="funny">
+                        <label for="int-funny">Funny Stories</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-space" value="space">
+                        <label for="int-space">Space</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="int-friendship" value="friendship">
+                        <label for="int-friendship">Friendship</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-grid" style="margin-top: 30px;">
+                <div class="filter-group">
+                    <label for="bookLength">Preferred Book Length</label>
+                    <select id="bookLength">
+                        <option value="">Any length</option>
+                        <option value="short">Short (under 100 pages)</option>
+                        <option value="medium">Medium (100-200 pages)</option>
+                        <option value="long">Long (200+ pages)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="seriesPreference">Series Preference</label>
+                    <select id="seriesPreference">
+                        <option value="">No preference</option>
+                        <option value="standalone">Standalone books</option>
+                        <option value="series">Part of a series</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="find-books-btn" onclick="findBooks()">Find Perfect Books</button>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>Your Personalized Reading List</h2>
+                <p>10 wonderful books perfectly matched to your child's interests</p>
+            </div>
+            
+            <div class="books-grid" id="booksGrid">
+            </div>
+
+            <button class="back-btn" onclick="resetForm()">Find More Books</button>
+        </div>
+    </div>
+
+    <script>
+        // Complete merged book database
+        let bookDatabase = [];
+// EXPANDED BOOK DATABASE - 250+ titles
+// Added significant variety to ages 4-5 beyond Julia Donaldson
+// Distributed books more evenly across all age ranges and reading levels
+
+bookDatabase = [
+    // ==========================================
+    // AGES 4-5 (EYFS) - EXPANDED BEYOND JULIA DONALDSON
+    // ==========================================
+    
+    // Julia Donaldson favorites (keeping the best ones)
+    {
+        "title": "The Gruffalo",
+        "author": "Julia Donaldson",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "funny", "adventure"],
+        "synopsis": "A clever mouse takes a walk through the woods and invents a monster called the Gruffalo to scare off predators.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Room on the Broom",
+        "author": "Julia Donaldson",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["fantasy", "friendship", "funny"],
+        "synopsis": "A kind witch keeps inviting animals onto her broomstick until disaster strikes!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Zog",
+        "author": "Julia Donaldson",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["fantasy", "adventure", "funny"],
+        "synopsis": "Zog is the keenest dragon at school. Can he win a golden star?",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Stick Man",
+        "author": "Julia Donaldson",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["adventure", "friendship"],
+        "synopsis": "Stick Man lives with his family in the family tree, but gets taken far from home.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    
+    // NEW: Classic Picture Books
+    {
+        "title": "The Tiger Who Came to Tea",
+        "author": "Judith Kerr",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "funny", "fantasy"],
+        "synopsis": "A tiger knocks on the door at teatime and eats and drinks everything in the house!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Mog the Forgetful Cat",
+        "author": "Judith Kerr",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "funny", "friendship"],
+        "synopsis": "Mog always seems to be in trouble because she forgets everything!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "We're Going on a Bear Hunt",
+        "author": "Michael Rosen",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["adventure", "animals"],
+        "synopsis": "A family goes on an exciting adventure hunting for a bear. Perfect for reading aloud!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Very Hungry Caterpillar",
+        "author": "Eric Carle",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "science"],
+        "synopsis": "Follow a caterpillar as he eats his way through the week, transforming into a butterfly.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    
+    // NEW: Modern Picture Book Favorites
+    {
+        "title": "The Day the Crayons Quit",
+        "author": "Drew Daywalt",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Duncan's crayons write him letters explaining why they're going on strike. Hilarious!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Day the Crayons Came Home",
+        "author": "Drew Daywalt",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "More crayon adventures as Duncan's lost crayons send postcards from their adventures!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Dragons Love Tacos",
+        "author": "Adam Rubin",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "animals", "fantasy"],
+        "synopsis": "Dragons love tacos, but absolutely cannot handle spicy salsa! What could go wrong?",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Dinosaur That Pooped a Planet",
+        "author": "Tom Fletcher",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "space", "animals"],
+        "synopsis": "Danny and Dino blast into space but Dino eats everything. Gross and hilarious!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Dinosaur That Pooped Christmas",
+        "author": "Tom Fletcher",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "animals"],
+        "synopsis": "Danny and Dino's Christmas goes wrong in the funniest way possible!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Supertato",
+        "author": "Sue Hendra",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "adventure"],
+        "synopsis": "The supermarket vegetables need a hero! Supertato saves the day from the Evil Pea.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Baddies",
+        "author": "Julia Donaldson",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "adventure"],
+        "synopsis": "Three bad characters try to be the baddest, but they might just learn to be good!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    
+    // NEW: Interactive/Lift-the-Flap
+    {
+        "title": "Dear Zoo",
+        "author": "Rod Campbell",
+        "ageRange": ["4-5"],
+        "interests": ["animals"],
+        "synopsis": "A child writes to the zoo for a pet. The zoo sends various animals but none are quite right!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Where's Spot?",
+        "author": "Eric Hill",
+        "ageRange": ["4-5"],
+        "interests": ["animals", "adventure"],
+        "synopsis": "Sally is looking for her puppy Spot. Lift the flaps to help find him!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "That's Not My Dinosaur",
+        "author": "Fiona Watt",
+        "ageRange": ["4-5"],
+        "interests": ["animals"],
+        "synopsis": "Touch and feel book helping little ones identify their dinosaur. Sensory fun!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    
+    // NEW: Rhyming Stories
+    {
+        "title": "Oi Frog!",
+        "author": "Kes Gray",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "animals"],
+        "synopsis": "Cats sit on mats, hares sit on chairs, but where should Frog sit? Hilarious rhyming!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Oi Dog!",
+        "author": "Kes Gray",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "animals"],
+        "synopsis": "The sequel to Oi Frog! Now there's a new rule about dogs sitting on frogs!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Oi Cat!",
+        "author": "Kes Gray",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "animals"],
+        "synopsis": "More rhyming chaos as the animals argue about where Cat should sit!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Giraffes Can't Dance",
+        "author": "Giles Andreae",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "friendship"],
+        "synopsis": "Gerald the giraffe can't dance, but with help he discovers his own rhythm!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Snail and the Whale",
+        "author": "Julia Donaldson",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["adventure", "animals", "friendship"],
+        "synopsis": "A tiny snail hitches a ride on a huge whale and goes on an amazing journey.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Hairy Maclary from Donaldson's Dairy",
+        "author": "Lynley Dodd",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "funny"],
+        "synopsis": "Hairy Maclary goes for a walk with friends until they meet Scarface Claw!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    
+    // NEW: Friendship & Emotions
+    {
+        "title": "Elmer the Elephant",
+        "author": "David McKee",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "friendship"],
+        "synopsis": "Elmer is a patchwork elephant who learns that being different is wonderful.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Rainbow Fish",
+        "author": "Marcus Pfister",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "friendship"],
+        "synopsis": "The most beautiful fish in the ocean learns that sharing brings happiness.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Colour Monster",
+        "author": "Anna Llenas",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["friendship"],
+        "synopsis": "The Colour Monster is confused about emotions. Can you help sort them out?",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Invisible String",
+        "author": "Patrice Karst",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["friendship"],
+        "synopsis": "A comforting story about the invisible string that connects people who love each other.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    
+    // NEW: Classic Characters
+    {
+        "title": "Paddington Bear",
+        "author": "Michael Bond",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["adventure", "funny", "animals"],
+        "synopsis": "A bear from Peru arrives at Paddington Station and is adopted by the Brown family.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Tale of Peter Rabbit",
+        "author": "Beatrix Potter",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "adventure"],
+        "synopsis": "Naughty Peter Rabbit sneaks into Mr. McGregor's garden. Will he escape?",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Winnie-the-Pooh",
+        "author": "A.A. Milne",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["animals", "friendship", "funny"],
+        "synopsis": "Pooh Bear and his friends in the Hundred Acre Wood have gentle adventures.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    
+    // NEW: Diverse Characters & Authors
+    {
+        "title": "Sulwe",
+        "author": "Lupita Nyong'o",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["friendship"],
+        "synopsis": "Sulwe has the darkest skin in her family. A magical journey shows her inner beauty.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Hair Love",
+        "author": "Matthew A. Cherry",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["friendship"],
+        "synopsis": "Daddy learns to do his daughter's hair for the first time. Heartwarming!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Paper Bag Princess",
+        "author": "Robert Munsch",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["adventure", "funny", "fantasy"],
+        "synopsis": "Princess Elizabeth outsmarts a dragon to rescue Prince Ronald. Empowering twist!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Ada Twist, Scientist",
+        "author": "Andrea Beaty",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["science", "funny"],
+        "synopsis": "Ada asks questions about everything and loves conducting experiments!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Rosie Revere, Engineer",
+        "author": "Andrea Beaty",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["science", "adventure"],
+        "synopsis": "Rosie dreams of being an engineer and building amazing inventions!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Iggy Peck, Architect",
+        "author": "Andrea Beaty",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["science", "adventure"],
+        "synopsis": "Iggy loves building towers and structures from anything he can find!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    
+    // NEW: Silly/Funny
+    {
+        "title": "Don't Let the Pigeon Drive the Bus",
+        "author": "Mo Willems",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny"],
+        "synopsis": "A pigeon really wants to drive the bus. Will you let him?",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Knuffle Bunny",
+        "author": "Mo Willems",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Trixie's beloved bunny goes missing at the laundromat. Can Daddy help?",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Book With No Pictures",
+        "author": "B.J. Novak",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny"],
+        "synopsis": "This book makes adults say silly words! Hilariously interactive.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Press Here",
+        "author": "Hervé Tullet",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["funny"],
+        "synopsis": "Press the dot and watch what happens! Interactive magic on every page.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    
+    // ==========================================
+    // AGES 5-6 (YEAR 1) - TRANSITIONAL READERS
+    // ==========================================
+    
+    {
+        "title": "Superworm",
+        "author": "Julia Donaldson",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["adventure", "animals", "funny"],
+        "synopsis": "Superworm is super-long and super-strong, always saving the day!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "The Smartest Giant in Town",
+        "author": "Julia Donaldson",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["friendship", "funny"],
+        "synopsis": "George the Giant gets new clothes but gives them away to help animals.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "What the Ladybird Heard",
+        "author": "Julia Donaldson",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["animals", "funny", "mystery"],
+        "synopsis": "A quiet ladybird foils two burglars' plan to steal the prize cow!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Tabby McTat",
+        "author": "Julia Donaldson",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["animals", "friendship"],
+        "synopsis": "A busking cat and his owner are separated. Will they find each other again?",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    
+    // NEW: Early Chapter Books
+    {
+        "title": "The Magic Finger",
+        "author": "Roald Dahl",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["fantasy", "funny", "animals"],
+        "synopsis": "When the girl gets angry, her magic finger zaps people!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "The Owl Who Was Afraid of the Dark",
+        "author": "Jill Tomlinson",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["animals", "friendship"],
+        "synopsis": "Plop is a baby owl afraid of the dark. He learns darkness is wonderful!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Winnie the Witch",
+        "author": "Valerie Thomas",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["fantasy", "funny"],
+        "synopsis": "Winnie lives in a black house with her black cat. Magic chaos ensues!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Claude in the City",
+        "author": "Alex T. Smith",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["adventure", "funny", "animals"],
+        "synopsis": "Claude is a dog in a beret who has exciting adventures when his owners leave!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Flat Stanley",
+        "author": "Jeff Brown",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["adventure", "funny"],
+        "synopsis": "After being flattened, Stanley discovers being thin has advantages!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    
+    // NEW: Popular Series for Early Readers
+    {
+        "title": "Isadora Moon Goes to School",
+        "author": "Harriet Muncaster",
+        "ageRange": ["5-6", "6-7", "7-8"],
+        "interests": ["fantasy", "friendship", "funny"],
+        "synopsis": "Isadora is half-fairy, half-vampire and totally unique!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Rainbow Magic: Ruby the Red Fairy",
+        "author": "Daisy Meadows",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["fantasy", "adventure", "friendship"],
+        "synopsis": "Rachel and Kirsty must find seven Rainbow Fairies to bring color back to Fairyland.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Naughty Amelia Jane",
+        "author": "Enid Blyton",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["funny", "adventure"],
+        "synopsis": "Amelia Jane is the naughtiest toy in the playroom! Classic mischief.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Mr. Panda",
+        "author": "Steve Antony",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["funny", "animals", "friendship"],
+        "synopsis": "Mr. Panda teaches manners in the funniest way. Perfect for new readers!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    
+    // ==========================================
+    // AGES 6-7 (YEAR 2) - CONFIDENT EARLY READERS
+    // ==========================================
+    
+    {
+        "title": "Dog Man",
+        "author": "Dav Pilkey",
+        "ageRange": ["6-7", "7-8", "8-9"],
+        "interests": ["funny", "adventure", "animals"],
+        "synopsis": "Part dog, part man, all hero! Hilarious graphic novel.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Dog Man Unleashed",
+        "author": "Dav Pilkey",
+        "ageRange": ["6-7", "7-8", "8-9"],
+        "interests": ["funny", "adventure"],
+        "synopsis": "Dog Man is back fighting Petey the cat's most improbable plot yet!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Captain Underpants",
+        "author": "Dav Pilkey",
+        "ageRange": ["6-7", "7-8", "8-9"],
+        "interests": ["funny", "adventure"],
+        "synopsis": "George and Harold hypnotize their principal into becoming Captain Underpants!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Horrid Henry",
+        "author": "Francesca Simon",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Henry is rude, horrid, and every parent's nightmare! Children love him.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "The Worst Witch",
+        "author": "Jill Murphy",
+        "ageRange": ["6-7", "7-8", "8-9"],
+        "interests": ["fantasy", "funny", "friendship"],
+        "synopsis": "Mildred is the worst witch at Miss Cackle's Academy. Her spells go wrong!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Beast Quest: Ferno the Fire Dragon",
+        "author": "Adam Blade",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Tom must go on a quest to free six magical beasts from an evil wizard's curse.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    
+    // NEW: More Series for 6-7
+    {
+        "title": "Beast Quest: Sepron the Sea Serpent",
+        "author": "Adam Blade",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Tom's quest continues as he must defeat Sepron who threatens the coast!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Amelia Fang and the Barbaric Ball",
+        "author": "Laura Ellen Anderson",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["funny", "fantasy", "friendship"],
+        "synopsis": "Amelia is a vampire girl who befriends humans. Gothic fun with heart!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "The Dragonsitter",
+        "author": "Josh Lacey",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["funny", "animals"],
+        "synopsis": "Eddie has to look after his uncle's dragon. Told through hilarious emails!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Bunny vs Monkey",
+        "author": "Jamie Smart",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["funny", "animals"],
+        "synopsis": "Bunny's peaceful forest is disrupted when Monkey arrives from space!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "The Secret Seven",
+        "author": "Enid Blyton",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["mystery", "adventure", "friendship"],
+        "synopsis": "Seven friends meet in a shed and solve mysteries. Classic adventures.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Dirty Bertie",
+        "author": "David Roberts",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["funny"],
+        "synopsis": "Bertie is the boy with nose-pickingly disgusting habits. Gross and funny!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Clarice Bean, That's Me",
+        "author": "Lauren Child",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Clarice Bean has a chaotic family and vivid imagination. Quirky illustrations!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    
+    // ==========================================
+    // AGES 7-8 (YEAR 3) - FLUENT READERS
+    // ==========================================
+    
+    {
+        "title": "Diary of a Wimpy Kid",
+        "author": "Jeff Kinney",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Greg Heffley records his trials in middle school. Hilarious illustrated diary!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Diary of a Wimpy Kid: Rodrick Rules",
+        "author": "Jeff Kinney",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Greg's older brother Rodrick knows all his embarrassing secrets!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Tom Gates: The Brilliant World of Tom Gates",
+        "author": "Liz Pichon",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Tom loves doodling and rock bands. His diary is filled with doodles!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Tom Gates: Excellent Excuses",
+        "author": "Liz Pichon",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Tom's back with more creative excuses and his band DogZombies!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The 13-Storey Treehouse",
+        "author": "Andy Griffiths",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["funny", "adventure"],
+        "synopsis": "Andy and Terry live in an amazing treehouse but have a book deadline!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The 26-Storey Treehouse",
+        "author": "Andy Griffiths",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["funny", "adventure"],
+        "synopsis": "The treehouse has grown with an ice cream parlour and anti-gravity chamber!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    
+    // Roald Dahl Books
+    {
+        "title": "The BFG",
+        "author": "Roald Dahl",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["fantasy", "adventure", "funny"],
+        "synopsis": "Sophie is snatched by the Big Friendly Giant who takes her to Giant Country!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Charlie and the Chocolate Factory",
+        "author": "Roald Dahl",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["fantasy", "adventure", "funny"],
+        "synopsis": "Charlie wins a golden ticket to visit Willy Wonka's mysterious factory!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Matilda",
+        "author": "Roald Dahl",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["fantasy", "funny", "friendship"],
+        "synopsis": "Brilliant Matilda has horrible parents but she has telekinetic powers!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Fantastic Mr Fox",
+        "author": "Roald Dahl",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["adventure", "animals", "funny"],
+        "synopsis": "Three farmers want to catch Mr Fox, but he has a brilliant plan!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "James and the Giant Peach",
+        "author": "Roald Dahl",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["fantasy", "adventure", "animals"],
+        "synopsis": "James escapes his aunts by climbing inside a giant peach!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "George's Marvellous Medicine",
+        "author": "Roald Dahl",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["funny", "fantasy"],
+        "synopsis": "George invents a magic medicine with explosive effects!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Twits",
+        "author": "Roald Dahl",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["funny", "animals"],
+        "synopsis": "Mr and Mrs Twit are nasty. But the monkeys have revenge planned!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Esio Trot",
+        "author": "Roald Dahl",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["funny", "animals", "friendship"],
+        "synopsis": "Mr Hoppy loves Mrs Silver but she only loves her tortoise Alfie!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    
+    // NEW: More classics and popular series
+    {
+        "title": "How to Train Your Dragon",
+        "author": "Cressida Cowell",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["fantasy", "adventure", "animals"],
+        "synopsis": "Hiccup is small and his dragon is tiny. Can he become a true Viking?",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Famous Five",
+        "author": "Enid Blyton",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Julian, Dick, Anne, George, and Timmy solve thrilling mysteries!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Magic Faraway Tree",
+        "author": "Enid Blyton",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Jo, Bessie, and Fanny discover a magical tree where different lands appear!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Mr Gum and the Biscuit Billionaire",
+        "author": "Andy Stanton",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["funny", "adventure"],
+        "synopsis": "Hilarious tale of nasty Mr Gum, good fairy Polly, and Lamonic Bibber!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Horrible Histories: The Terrible Tudors",
+        "author": "Terry Deary",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["history", "funny"],
+        "synopsis": "All the foul facts about Tudor times! History with nasty bits left in.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Horrible Histories: The Vicious Vikings",
+        "author": "Terry Deary",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["history", "funny"],
+        "synopsis": "Discover the vile Vikings from their savage raids to silly names!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Horrible Histories: The Rotten Romans",
+        "author": "Terry Deary",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["history", "funny"],
+        "synopsis": "Rotten Romans and foul facts - gladiators, emperors, ancient toilets!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    
+    // NEW: Additional popular Year 3 books
+    {
+        "title": "Charlotte's Web",
+        "author": "E.B. White",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["animals", "friendship"],
+        "synopsis": "Wilbur the pig is saved by Charlotte, a spider who weaves words. Timeless!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Hodgeheg",
+        "author": "Dick King-Smith",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["animals", "funny", "adventure"],
+        "synopsis": "Max the hedgehog tries to find a safe way for hedgehogs to cross the road!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Sheep-Pig (Babe)",
+        "author": "Dick King-Smith",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["animals", "funny"],
+        "synopsis": "Babe is a pig who wants to be a sheepdog. Can he do it?",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Fantastic Flying Books of Mr Morris Lessmore",
+        "author": "William Joyce",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Mr. Morris Lessmore discovers flying books that need his help. Magical!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    
+    // ==========================================
+    // AGES 8-9 (YEAR 4) - CONFIDENT READERS
+    // ==========================================
+    
+    {
+        "title": "The Witches",
+        "author": "Roald Dahl",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Witches are real and HATE children! A boy must stop their evil plan.",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Danny the Champion of the World",
+        "author": "Roald Dahl",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["adventure", "friendship"],
+        "synopsis": "Danny and his father live in a caravan and share incredible adventures!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    
+    // David Walliams Books
+    {
+        "title": "Gangsta Granny",
+        "author": "David Walliams",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["funny", "adventure", "mystery"],
+        "synopsis": "Ben discovers his granny was an international jewel thief!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Mr Stink",
+        "author": "David Walliams",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Chloe befriends Mr Stink and hides him in her garden shed!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Billionaire Boy",
+        "author": "David Walliams",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Joe has everything money can buy but wants a real friend.",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Demon Dentist",
+        "author": "David Walliams",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["funny", "mystery"],
+        "synopsis": "Children's teeth are mysteriously being replaced! Can Alfie discover the truth?",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Awful Auntie",
+        "author": "David Walliams",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["mystery", "adventure", "funny"],
+        "synopsis": "Stella's awful Aunt Alberta wants to steal her home!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Ratburger",
+        "author": "David Walliams",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["funny", "animals", "adventure"],
+        "synopsis": "Zoe loves her pet rat but evil Burt wants to turn rats into burgers!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Boy in the Dress",
+        "author": "David Walliams",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Dennis secretly loves fashion and dresses. Can he be himself?",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    
+    // Jacqueline Wilson Books
+    {
+        "title": "The Story of Tracy Beaker",
+        "author": "Jacqueline Wilson",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["friendship", "funny"],
+        "synopsis": "Tracy lives in a care home and dreams of being fostered. Honest and funny!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Double Act",
+        "author": "Jacqueline Wilson",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["friendship"],
+        "synopsis": "Ruby and Garnet are identical twins. What happens when they want different things?",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Suitcase Kid",
+        "author": "Jacqueline Wilson",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["friendship"],
+        "synopsis": "Andy's parents are divorced and she lives between two homes. Moving story.",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Bad Girls",
+        "author": "Jacqueline Wilson",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["friendship"],
+        "synopsis": "Mandy is bullied until she meets Tanya, who might be a bad influence!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    
+    // NEW: More popular Year 4 books
+    {
+        "title": "Dork Diaries",
+        "author": "Rachel Renée Russell",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Nikki's diary chronicles her dramatic school life with mean girls and crushes!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Lottie Brooks: The Plot to Kill My BFF",
+        "author": "Katie Kirby",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["funny", "friendship"],
+        "synopsis": "Lottie's hilariously chaotic life with best friend drama and school survival!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Butterfly Lion",
+        "author": "Michael Morpurgo",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["animals", "friendship", "history"],
+        "synopsis": "Bertie rescues a lion cub in Africa but must send him away. Beautiful!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Wild Robot",
+        "author": "Peter Brown",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["science", "adventure", "animals"],
+        "synopsis": "Roz the robot is stranded on a wild island and must learn to survive!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Pages & Co: Tilly and the Bookwanderers",
+        "author": "Anna James",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Tilly discovers she can travel inside books! Magical for book lovers.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Who Let the Gods Out?",
+        "author": "Maz Evans",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["fantasy", "funny", "adventure"],
+        "synopsis": "Elliot meets a fallen constellation and Greek gods appear. Hilarious!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Last Wild",
+        "author": "Piers Torday",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["adventure", "animals", "science"],
+        "synopsis": "Kester can talk to animals and they need his help! Most are extinct.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    
+    // ==========================================
+    // AGES 9-10 (YEAR 5) - ADVANCED READERS
+    // ==========================================
+    
+    {
+        "title": "Harry Potter and the Philosopher's Stone",
+        "author": "J.K. Rowling",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure", "friendship"],
+        "synopsis": "Harry discovers he's a wizard and starts at Hogwarts. The legend begins!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Harry Potter and the Chamber of Secrets",
+        "author": "J.K. Rowling",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure", "mystery"],
+        "synopsis": "Something sinister is happening. Harry must find the Chamber of Secrets!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Harry Potter and the Prisoner of Azkaban",
+        "author": "J.K. Rowling",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure", "mystery"],
+        "synopsis": "Sirius Black has escaped from Azkaban and everyone thinks he's after Harry!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Percy Jackson and the Lightning Thief",
+        "author": "Rick Riordan",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure", "history"],
+        "synopsis": "Percy discovers he's a demigod and must prevent a war between Greek gods!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Percy Jackson: The Sea of Monsters",
+        "author": "Rick Riordan",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Percy must save Camp Half-Blood by finding the Golden Fleece!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Percy Jackson: The Titan's Curse",
+        "author": "Rick Riordan",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Percy and friends rescue Artemis from the Titans!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    
+    // Michael Morpurgo
+    {
+        "title": "War Horse",
+        "author": "Michael Morpurgo",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["history", "animals", "adventure"],
+        "synopsis": "Joey the horse is sold to cavalry in WWI. Unforgettable from Joey's perspective!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Kensuke's Kingdom",
+        "author": "Michael Morpurgo",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["adventure", "friendship"],
+        "synopsis": "Michael is washed up on a desert island where he meets Kensuke!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Private Peaceful",
+        "author": "Michael Morpurgo",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["history", "friendship"],
+        "synopsis": "Tommo recalls his childhood as he spends one night in WWI trenches. Powerful!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    
+    // NEW: More Year 5 books
+    {
+        "title": "Wonder",
+        "author": "R.J. Palacio",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["friendship"],
+        "synopsis": "Auggie has a facial deformity and starts mainstream school. Powerful story!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Holes",
+        "author": "Louis Sachar",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Stanley is sent to a camp where he must dig holes every day. But why?",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Lion, the Witch and the Wardrobe",
+        "author": "C.S. Lewis",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Four children discover Narnia through a wardrobe. Chronicles begin!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Secret Garden",
+        "author": "Frances Hodgson Burnett",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["adventure", "friendship"],
+        "synopsis": "Mary discovers a locked garden and brings it back to life. Beautiful classic!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Artemis Fowl",
+        "author": "Eoin Colfer",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure", "science"],
+        "synopsis": "Criminal mastermind Artemis discovers fairies and plans the ultimate heist!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Murder Most Unladylike",
+        "author": "Robin Stevens",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["mystery", "friendship"],
+        "synopsis": "Daisy and Hazel run a detective agency at their 1930s boarding school!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Boy at the Back of the Class",
+        "author": "Onjali Q. Raúf",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["friendship"],
+        "synopsis": "A new boy arrives - a refugee from Syria. His classmates help reunite him with family!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Skandar and the Unicorn Thief",
+        "author": "A.F. Steadman",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure", "animals"],
+        "synopsis": "Skandar dreams of riding unicorns. When invited to train, he discovers dark secrets!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Nevermoor: The Trials of Morrigan Crow",
+        "author": "Jessica Townsend",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure", "mystery"],
+        "synopsis": "Morrigan is cursed but rescued and taken to magical Nevermoor for trials!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The House With Chicken Legs",
+        "author": "Sophie Anderson",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Marinka lives in a house that walks on chicken legs and guides the dead!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Explorer",
+        "author": "Katherine Rundell",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["adventure"],
+        "synopsis": "Four children survive a plane crash in the Amazon. Their quest becomes epic!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Rooftoppers",
+        "author": "Katherine Rundell",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["adventure", "mystery"],
+        "synopsis": "Sophie believes her mother survived. She'll climb every rooftop in Paris to find her!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Impossible Creatures",
+        "author": "Katherine Rundell",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["fantasy", "adventure", "animals"],
+        "synopsis": "Christopher discovers a magical world of impossible creatures threatened by evil!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Girl of Ink and Stars",
+        "author": "Kiran Millwood Hargrave",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["adventure", "fantasy", "friendship"],
+        "synopsis": "Isabella's friend disappears into forbidden forest. She uses her mapmaking skills!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Cogheart",
+        "author": "Peter Bunzl",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["adventure", "mystery", "science"],
+        "synopsis": "Lily's father disappeared. With her mechanical fox, she sets off on steampunk adventure!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Illustrated Mum",
+        "author": "Jacqueline Wilson",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["friendship"],
+        "synopsis": "Dolphin loves her mum covered in tattoos, but Marigold has mental health issues.",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    
+    // ==========================================
+    // AGES 10-11 (YEAR 6) - MATURE READERS
+    // ==========================================
+    
+    {
+        "title": "Harry Potter and the Goblet of Fire",
+        "author": "J.K. Rowling",
+        "ageRange": ["10-11"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Harry is mysteriously entered into the dangerous Triwizard Tournament!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "ageRange": ["10-11"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Bilbo is swept into an epic quest to reclaim treasure from a dragon!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Northern Lights",
+        "author": "Philip Pullman",
+        "ageRange": ["10-11"],
+        "interests": ["fantasy", "adventure"],
+        "synopsis": "Lyra's epic quest takes her to the frozen North. His Dark Materials begins!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Alex Rider: Stormbreaker",
+        "author": "Anthony Horowitz",
+        "ageRange": ["10-11"],
+        "interests": ["adventure", "mystery"],
+        "synopsis": "14-year-old Alex is recruited by MI6 as a teenage spy. Action-packed!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Skulduggery Pleasant",
+        "author": "Derek Landy",
+        "ageRange": ["10-11"],
+        "interests": ["fantasy", "mystery", "funny"],
+        "synopsis": "Stephanie meets Skulduggery Pleasant, a skeleton detective who fights evil!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Goodnight Mister Tom",
+        "author": "Michelle Magorian",
+        "ageRange": ["10-11"],
+        "interests": ["history", "friendship"],
+        "synopsis": "Willie is evacuated during WWII and placed with gruff Mr Tom. Moving healing story!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    
+    // NEW: More Year 6 books
+    {
+        "title": "The Hunger Games",
+        "author": "Suzanne Collins",
+        "ageRange": ["10-11"],
+        "interests": ["adventure", "science"],
+        "synopsis": "Katniss volunteers for deadly televised games. Dark dystopian thriller!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Mortal Engines",
+        "author": "Philip Reeve",
+        "ageRange": ["10-11"],
+        "interests": ["science", "adventure"],
+        "synopsis": "Cities on wheels hunt each other in a steampunk future. Epic adventure!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Divergent",
+        "author": "Veronica Roth",
+        "ageRange": ["10-11"],
+        "interests": ["science", "adventure"],
+        "synopsis": "Tris discovers she's Divergent in a faction-based society. Dangerous secret!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Maze Runner",
+        "author": "James Dashner",
+        "ageRange": ["10-11"],
+        "interests": ["science", "mystery", "adventure"],
+        "synopsis": "Thomas wakes in a maze with no memory. He must escape with the Gladers!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Hatchet",
+        "author": "Gary Paulsen",
+        "ageRange": ["10-11"],
+        "interests": ["adventure"],
+        "synopsis": "Brian survives a plane crash and must survive alone in Canadian wilderness!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "I Am Number Four",
+        "author": "Pittacus Lore",
+        "ageRange": ["10-11"],
+        "interests": ["science", "adventure"],
+        "synopsis": "John is an alien hiding on Earth. Three others are dead. He's Number Four!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Miss Peregrine's Home for Peculiar Children",
+        "author": "Ransom Riggs",
+        "ageRange": ["10-11"],
+        "interests": ["fantasy", "mystery"],
+        "synopsis": "Jacob discovers an abandoned orphanage with children who have peculiar abilities!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Eragon",
+        "author": "Christopher Paolini",
+        "ageRange": ["10-11"],
+        "interests": ["fantasy", "adventure", "animals"],
+        "synopsis": "Eragon finds a dragon egg and becomes a Dragon Rider. Epic fantasy begins!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Graveyard Book",
+        "author": "Neil Gaiman",
+        "ageRange": ["10-11"],
+        "interests": ["fantasy", "mystery"],
+        "synopsis": "Nobody Owens is raised by ghosts in a graveyard after his family is murdered!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Stormbreaker",
+        "author": "Anthony Horowitz",
+        "ageRange": ["10-11"],
+        "interests": ["adventure", "mystery"],
+        "synopsis": "Alex Rider becomes a teenage spy after his uncle's murder. Thrilling action!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "A Series of Unfortunate Events: The Bad Beginning",
+        "author": "Lemony Snicket",
+        "ageRange": ["10-11"],
+        "interests": ["mystery", "funny"],
+        "synopsis": "The Baudelaire orphans face Count Olaf's terrible schemes. Dark comedy!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Book Thief",
+        "author": "Markus Zusak",
+        "ageRange": ["10-11"],
+        "interests": ["history", "friendship"],
+        "synopsis": "Liesel steals books in Nazi Germany. Narrated by Death. Powerful and moving!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Noughts and Crosses",
+        "author": "Malorie Blackman",
+        "ageRange": ["10-11"],
+        "interests": ["friendship"],
+        "synopsis": "Sephy and Callum are friends in a world divided by race. Powerful themes!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Ender's Game",
+        "author": "Orson Scott Card",
+        "ageRange": ["10-11"],
+        "interests": ["science", "space"],
+        "synopsis": "Ender trains at Battle School to fight aliens. Military sci-fi classic!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    }
+];
+
+        // Merge additional books
+// ADDITIONAL BOOKS TO FILL INTEREST GAPS
+// Focus on: SPORTS (0), SPACE (2), HISTORY (9), SCIENCE (14), MYSTERY (20)
+
+const additionalBooks = [
+    
+    // ==========================================
+    // SPORTS BOOKS (Currently 0 - Adding 20+)
+    // ==========================================
+    
+    // Ages 4-6
+    {
+        "title": "Pete the Cat: Play Ball!",
+        "author": "James Dean",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["sports", "funny", "friendship"],
+        "synopsis": "Pete plays baseball for the first time and learns it's not about winning, it's about playing your best!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Little Footballer",
+        "author": "Michael Foreman",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["sports", "friendship"],
+        "synopsis": "A young boy discovers the joy of football and learns about teamwork and perseverance.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Peppa Pig: Sports Day",
+        "author": "Ladybird",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["sports", "funny", "friendship"],
+        "synopsis": "It's Sports Day at playgroup! Peppa and her friends compete in races and games.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    
+    // Ages 6-8
+    {
+        "title": "Kick It!",
+        "author": "Tom Palmer",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["sports", "friendship"],
+        "synopsis": "Jamie loves football but struggles to fit in. Can he make the team?",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Foul Play",
+        "author": "Tom Palmer",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["sports", "mystery"],
+        "synopsis": "Danny and his sister investigate suspicious activity at their football club!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Football School: Where Football Explains the World",
+        "author": "Alex Bellos & Ben Lyttleton",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["sports", "science", "funny"],
+        "synopsis": "Learn about maths, science, and geography through football! Educational and fun.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Karate Princess",
+        "author": "Jeremy Strong",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["sports", "funny", "friendship"],
+        "synopsis": "Princess Belinda doesn't want to be a princess - she wants to do karate!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Gym Stars: Summertime and Somersaults",
+        "author": "Jane Lawes",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["sports", "friendship"],
+        "synopsis": "Tara joins gymnastics club and discovers her love for somersaults and backflips!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    
+    // Ages 8-10
+    {
+        "title": "Boy in the Tower",
+        "author": "Polly Ho-Yen",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["sports", "adventure", "science"],
+        "synopsis": "Ade loves running and when his tower block is surrounded by mysterious plants, he must escape!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Ghost",
+        "author": "Jason Reynolds",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["sports", "friendship"],
+        "synopsis": "Ghost has talent for running but a troubled past. Can he become a track star?",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Patina",
+        "author": "Jason Reynolds",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["sports", "friendship"],
+        "synopsis": "Patty runs on the track team but must balance training with being a foster kid.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Running on the Roof of the World",
+        "author": "Jess Butterworth",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["sports", "adventure"],
+        "synopsis": "Tash loves running in the Himalayas. When soldiers arrive, she must run to freedom.",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Crossover",
+        "author": "Kwame Alexander",
+        "ageRange": ["10-11"],
+        "interests": ["sports", "friendship"],
+        "synopsis": "Josh and Jordan are basketball stars but family troubles threaten their game. Novel in verse!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Rebound",
+        "author": "Kwame Alexander",
+        "ageRange": ["10-11"],
+        "interests": ["sports", "friendship"],
+        "synopsis": "Before The Crossover - Charlie Bell discovers basketball after his father's death.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Booked",
+        "author": "Kwame Alexander",
+        "ageRange": ["10-11"],
+        "interests": ["sports", "friendship"],
+        "synopsis": "Nick loves football (soccer) and must navigate school, family, and the big game!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Boy Who Harnessed the Wind",
+        "author": "William Kamkwamba",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["sports", "science", "history"],
+        "synopsis": "True story of a boy in Malawi who builds a windmill and saves his village. Inspiring!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Racehorse Who Wouldn't Gallop",
+        "author": "Clare Balding",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["sports", "animals"],
+        "synopsis": "Charlie's pony won't race! Can he discover why and help him become a champion?",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Racehorse Who Learned to Dance",
+        "author": "Clare Balding",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["sports", "animals"],
+        "synopsis": "Charlie and Noble need to learn dressage. Can a racehorse become a dancing horse?",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    
+    // ==========================================
+    // SPACE BOOKS (Currently 2 - Adding 18+)
+    // ==========================================
+    
+    // Ages 4-6
+    {
+        "title": "Whatever Next!",
+        "author": "Jill Murphy",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["space", "adventure", "animals"],
+        "synopsis": "Baby Bear goes on a space adventure to the moon using a cardboard box rocket!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Aliens Love Underpants",
+        "author": "Claire Freedman",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["space", "funny"],
+        "synopsis": "Aliens visit Earth not to invade, but to steal underpants! Hilarious rhyming book.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Aliens in Underpants Save the World",
+        "author": "Claire Freedman",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["space", "funny"],
+        "synopsis": "The aliens are back and this time they're saving Earth from a meteor!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "The Darkest Dark",
+        "author": "Chris Hadfield",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["space", "adventure"],
+        "synopsis": "Young Chris is afraid of the dark until he watches the moon landing and dreams of space!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Roaring Rockets",
+        "author": "Tony Mitton",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["space", "science"],
+        "synopsis": "Zoom to the moon in a rocket! Rhyming introduction to space travel.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Look Inside Space",
+        "author": "Rob Lloyd Jones",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["space", "science"],
+        "synopsis": "Lift-the-flap book exploring planets, astronauts, and the International Space Station!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "emerging"
+    },
+    
+    // Ages 6-8
+    {
+        "title": "George's Secret Key to the Universe",
+        "author": "Lucy & Stephen Hawking",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["space", "science", "adventure"],
+        "synopsis": "George discovers a computer that creates portals to outer space! Science adventure.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Space Dumplins",
+        "author": "Craig Thompson",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["space", "adventure"],
+        "synopsis": "Violet's space station parents are missing! She must rescue them in her dad's whale ship. Graphic novel!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Cosmic",
+        "author": "Frank Cottrell Boyce",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["space", "funny", "adventure"],
+        "synopsis": "Liam looks like an adult so he pretends to be one and accidentally goes to space!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    
+    // Ages 8-10
+    {
+        "title": "The Jamie Drake Equation",
+        "author": "Christopher Edge",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["space", "science", "adventure"],
+        "synopsis": "Jamie's dad is an astronaut on the ISS who's gone missing. Is it aliens?",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Phoenix and the Carpet",
+        "author": "E. Nesbit",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["fantasy", "adventure", "space"],
+        "synopsis": "Children find a magic carpet and a Phoenix who take them on adventures!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Wild Robot Escapes",
+        "author": "Peter Brown",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["science", "space", "adventure"],
+        "synopsis": "Roz escapes to the city but longs for her island. Beautiful sequel!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    
+    // Ages 10-11
+    {
+        "title": "A Wrinkle in Time",
+        "author": "Madeleine L'Engle",
+        "ageRange": ["10-11"],
+        "interests": ["space", "science", "adventure"],
+        "synopsis": "Meg travels through space and time to rescue her scientist father. Classic sci-fi!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Last Kids on Earth",
+        "author": "Max Brallier",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["space", "adventure", "funny"],
+        "synopsis": "Jack survives a zombie apocalypse with monsters from space! Graphic novel style.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Spaceship Earth: A Journey Through the Solar System",
+        "author": "Jon Richards",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["space", "science"],
+        "synopsis": "Blast through the solar system learning about planets, asteroids, and space travel!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Hidden Figures: Young Readers' Edition",
+        "author": "Margot Lee Shetterly",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["space", "history", "science"],
+        "synopsis": "True story of Black female mathematicians who helped NASA reach space!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Pax",
+        "author": "Sara Pennypacker",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["animals", "friendship", "adventure"],
+        "synopsis": "Peter and his fox Pax are separated by war. Their journey back to each other is epic.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    
+    // ==========================================
+    // MORE SCIENCE BOOKS (Currently 14 - Adding 15+)
+    // ==========================================
+    
+    {
+        "title": "The Magic School Bus: Lost in the Solar System",
+        "author": "Joanna Cole",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["science", "space", "adventure"],
+        "synopsis": "Ms. Frizzle's class takes a field trip to the solar system!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "The Magic School Bus: Inside the Human Body",
+        "author": "Joanna Cole",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["science", "adventure"],
+        "synopsis": "The class shrinks down and travels inside Arnold's body. Educational adventure!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Professor Astro Cat's Frontiers of Space",
+        "author": "Dominic Walliman",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["science", "space"],
+        "synopsis": "Learn about space with Professor Astro Cat! Beautifully illustrated science book.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Professor Astro Cat's Human Body Odyssey",
+        "author": "Dominic Walliman",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["science"],
+        "synopsis": "Discover how your body works with Professor Astro Cat as your guide!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Animalium",
+        "author": "Jenny Broom",
+        "ageRange": ["7-8", "8-9", "9-10"],
+        "interests": ["science", "animals"],
+        "synopsis": "Welcome to the museum of animals! Gorgeous illustrated guide to the animal kingdom.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Brilliant World Encyclopedia",
+        "author": "DK",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["science", "history"],
+        "synopsis": "Amazing facts about everything from dinosaurs to space to the human body!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Women in Science",
+        "author": "Rachel Ignotofsky",
+        "ageRange": ["8-9", "9-10", "10-11"],
+        "interests": ["science", "history"],
+        "synopsis": "50 fearless pioneers who changed the world through science. Illustrated biographies!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Usborne Science Encyclopedia",
+        "author": "Kirsteen Rogers",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["science"],
+        "synopsis": "Everything from atoms to evolution to energy. Comprehensive science reference!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Element in the Room",
+        "author": "Mike Barfield",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["science", "funny"],
+        "synopsis": "Science jokes and puns! Learn about elements, physics, and chemistry with humor.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Super Science",
+        "author": "Rob Beattie",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["science"],
+        "synopsis": "Science experiments you can do at home! Hands-on learning about physics and chemistry.",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Evolution: The Human Story",
+        "author": "Dr. Alice Roberts",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["science", "history"],
+        "synopsis": "How humans evolved from apes. Fascinating look at human history and archaeology!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Way Things Work Now",
+        "author": "David Macaulay",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["science"],
+        "synopsis": "How do machines work? From levers to computers, explained with humor and detail!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Genetics: A Graphic Guide",
+        "author": "Steve Jones",
+        "ageRange": ["10-11"],
+        "interests": ["science"],
+        "synopsis": "Learn about DNA, genes, and heredity through illustrated explanations!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    
+    // ==========================================
+    // MORE HISTORY BOOKS (Currently 9 - Adding 18+)
+    // ==========================================
+    
+    {
+        "title": "Ancient Egypt: Tales of Gods and Pharaohs",
+        "author": "Marcia Williams",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["history", "adventure"],
+        "synopsis": "Comic-strip style stories of ancient Egyptian myths and pharaohs!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Greek Myths",
+        "author": "Marcia Williams",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["history", "fantasy"],
+        "synopsis": "Classic Greek myths retold in comic strip format! Fun and educational.",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "The Time Travelling Cat and the Egyptian Goddess",
+        "author": "Julia Jarman",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history", "adventure", "animals"],
+        "synopsis": "Topher's cat takes him back to ancient Egypt where he meets Cleopatra!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Time Travelling Cat and the Roman Eagle",
+        "author": "Julia Jarman",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history", "adventure", "animals"],
+        "synopsis": "Topher travels to Roman Britain and gets caught up in a rebellion!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Horrible Histories: The Awesome Egyptians",
+        "author": "Terry Deary",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history", "funny"],
+        "synopsis": "Foul facts about ancient Egypt - mummies, pyramids, and disgusting details!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Horrible Histories: The Stormin' Normans",
+        "author": "Terry Deary",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history", "funny"],
+        "synopsis": "Discover the nasty Normans and the Battle of Hastings!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Horrible Histories: The Measly Middle Ages",
+        "author": "Terry Deary",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history", "funny"],
+        "synopsis": "Knights, castles, the Black Death - medieval times with all the nasty bits!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Horrible Histories: The Groovy Greeks",
+        "author": "Terry Deary",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history", "funny"],
+        "synopsis": "Ancient Greece with all the horrible details about gods, wars, and Olympics!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Romans on the Rampage",
+        "author": "Jeremy Strong",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["history", "funny"],
+        "synopsis": "Maddy's family dress as Romans for a history project. Chaos and comedy!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Stone Age Boy",
+        "author": "Satoshi Kitamura",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["history", "adventure"],
+        "synopsis": "A boy falls into a Stone Age village and learns how people lived long ago!",
+        "length": "short",
+        "series": false,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Who Was Anne Frank?",
+        "author": "Ann Abramson",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["history"],
+        "synopsis": "Biography of Anne Frank and her diary during the Holocaust. Important history.",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Who Was Martin Luther King Jr.?",
+        "author": "Bonnie Bader",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["history"],
+        "synopsis": "Learn about MLK and the civil rights movement. Inspiring biography!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Who Was Rosa Parks?",
+        "author": "Yona Zeldis McDonough",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history"],
+        "synopsis": "The woman who refused to give up her bus seat and changed history!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Diary of a Young Girl",
+        "author": "Anne Frank",
+        "ageRange": ["10-11"],
+        "interests": ["history"],
+        "synopsis": "Anne Frank's actual diary during WWII. Powerful and moving historical document.",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Egyptian Echo",
+        "author": "Vivian French",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history", "mystery"],
+        "synopsis": "Time-traveling detective Sam solves mysteries in ancient Egypt!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Roman Rescue",
+        "author": "Vivian French",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["history", "mystery"],
+        "synopsis": "Sam the time detective travels to ancient Rome to solve a mystery!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Code Name Verity",
+        "author": "Elizabeth Wein",
+        "ageRange": ["10-11"],
+        "interests": ["history", "mystery", "friendship"],
+        "synopsis": "Two young women in WWII - a pilot and a spy. Gripping wartime thriller!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Time Train to the Blitz",
+        "author": "Sofie Laguna",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["history", "adventure"],
+        "synopsis": "Jessie time-travels to the London Blitz and experiences WWII firsthand!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    
+    // ==========================================
+    // MORE MYSTERY BOOKS (Currently 20 - Adding 15+)
+    // ==========================================
+    
+    {
+        "title": "Nate the Great",
+        "author": "Marjorie Weinman Sharmat",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["mystery", "funny"],
+        "synopsis": "Nate is a boy detective who solves mysteries in his neighborhood!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Nate the Great and the Lost List",
+        "author": "Marjorie Weinman Sharmat",
+        "ageRange": ["5-6", "6-7"],
+        "interests": ["mystery", "funny"],
+        "synopsis": "Nate must find Claude's lost grocery list before lunch is ruined!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "Encyclopedia Brown, Boy Detective",
+        "author": "Donald J. Sobol",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["mystery"],
+        "synopsis": "Leroy 'Encyclopedia' Brown solves cases for 25 cents a day. Classic mysteries!",
+        "length": "short",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Nancy Drew: The Secret of the Old Clock",
+        "author": "Carolyn Keene",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Teen detective Nancy Drew solves her first case involving a missing will!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Hardy Boys: The Tower Treasure",
+        "author": "Franklin W. Dixon",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Brothers Frank and Joe Hardy solve the mystery of stolen treasure!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "Enola Holmes: The Case of the Missing Marquess",
+        "author": "Nancy Springer",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Sherlock Holmes' younger sister is a detective too! She searches for her missing mother.",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The London Eye Mystery",
+        "author": "Siobhan Dowd",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["mystery"],
+        "synopsis": "Ted's cousin goes up in the London Eye and never comes down. Where did he go?",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Case of the Missing Cake",
+        "author": "Eoin McLaughlin",
+        "ageRange": ["4-5", "5-6"],
+        "interests": ["mystery", "funny", "animals"],
+        "synopsis": "Squirrel's cake is missing! Can his friends help solve the mystery?",
+        "length": "short",
+        "series": false,
+        "readingLevel": "emerging"
+    },
+    {
+        "title": "Clementine",
+        "author": "Sara Pennypacker",
+        "ageRange": ["6-7", "7-8"],
+        "interests": ["mystery", "funny", "friendship"],
+        "synopsis": "Clementine means well but trouble always finds her. Can she solve problems she creates?",
+        "length": "short",
+        "series": true,
+        "readingLevel": "developing"
+    },
+    {
+        "title": "The Great Shelby Holmes",
+        "author": "Elizabeth Eulberg",
+        "ageRange": ["7-8", "8-9"],
+        "interests": ["mystery", "funny"],
+        "synopsis": "Shelby is the best detective in Harlem! Modern Sherlock Holmes twist!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The 39 Clues: The Maze of Bones",
+        "author": "Rick Riordan",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Amy and Dan hunt for 39 clues that lead to a family secret and power!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "From the Mixed-Up Files of Mrs. Basil E. Frankweiler",
+        "author": "E.L. Konigsburg",
+        "ageRange": ["8-9", "9-10"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Claudia and Jamie run away to live in the Metropolitan Museum and solve a mystery!",
+        "length": "medium",
+        "series": false,
+        "readingLevel": "fluent"
+    },
+    {
+        "title": "The Westing Game",
+        "author": "Ellen Raskin",
+        "ageRange": ["10-11"],
+        "interests": ["mystery"],
+        "synopsis": "16 people play a game for Sam Westing's fortune. One of them is a murderer!",
+        "length": "long",
+        "series": false,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "Chasing Vermeer",
+        "author": "Blue Balliett",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Petra and Calder investigate the theft of a Vermeer painting using codes and pentominoes!",
+        "length": "medium",
+        "series": true,
+        "readingLevel": "advanced"
+    },
+    {
+        "title": "The Mysterious Benedict Society",
+        "author": "Trenton Lee Stewart",
+        "ageRange": ["9-10", "10-11"],
+        "interests": ["mystery", "adventure"],
+        "synopsis": "Four gifted orphans go on a secret mission to save the world from mind control!",
+        "length": "long",
+        "series": true,
+        "readingLevel": "advanced"
+    }
+];
+        bookDatabase = bookDatabase.concat(additionalBooks);
+
+        function findBooks() {
+            const ageRange = document.getElementById('ageRange').value;
+            const readingLevel = document.getElementById('readingLevel').value;
+            const bookLength = document.getElementById('bookLength').value;
+            const seriesPreference = document.getElementById('seriesPreference').value;
+            const interests = Array.from(document.querySelectorAll('#interests input:checked')).map(checkbox => checkbox.value);
+
+            if (!ageRange) {
+                alert('Please select an age range for your child');
+                return;
+            }
+
+            let scoredBooks = bookDatabase.map((book, index) => {
+                let score = 0;
+                if (book.ageRange.includes(ageRange)) score += 10;
+                const matchingInterests = book.interests.filter(interest => interests.includes(interest)).length;
+                score += matchingInterests * 5;
+                if (readingLevel && book.readingLevel === readingLevel) score += 4;
+                if (bookLength && book.length === bookLength) score += 3;
+                if (seriesPreference === 'standalone' && !book.series) score += 2;
+                else if (seriesPreference === 'series' && book.series) score += 2;
+                
+                // Add tiny random value to break ties and ensure variety
+                score += Math.random() * 0.1;
+                
+                return { ...book, score, originalIndex: index };
+            });
+
+            scoredBooks.sort((a, b) => b.score - a.score);
+            const topBooks = scoredBooks.slice(0, 10);
+            displayBooks(topBooks);
+        }
+
+        function displayBooks(books) {
+            const booksGrid = document.getElementById('booksGrid');
+            booksGrid.innerHTML = '';
+
+            books.forEach((book, index) => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                const seriesTag = book.series ? '<span class="meta-tag">Series</span>' : '<span class="meta-tag">Standalone</span>';
+                const lengthLabel = book.length === 'short' ? 'Quick Read' : book.length === 'medium' ? 'Medium Length' : 'Epic Read';
+                
+                bookCard.innerHTML = `
+                    <span class="book-number">Book ${index + 1}</span>
+                    <h3>${book.title}</h3>
+                    <p class="book-author">by ${book.author}</p>
+                    <div class="book-meta">
+                        ${seriesTag}
+                        <span class="meta-tag">${lengthLabel}</span>
+                        <span class="meta-tag">${book.interests[0]}</span>
+                    </div>
+                    <p class="book-synopsis">${book.synopsis}</p>
+                `;
+                booksGrid.appendChild(bookCard);
+            });
+
+            document.getElementById('filterSection').style.display = 'none';
+            document.getElementById('resultsSection').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.getElementById('ageRange').value = '';
+            document.getElementById('readingLevel').value = '';
+            document.getElementById('favoriteAuthor').value = '';
+            document.getElementById('bookLength').value = '';
+            document.getElementById('seriesPreference').value = '';
+            document.querySelectorAll('#interests input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.getElementById('filterSection').style.display = 'block';
+            document.getElementById('resultsSection').classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
